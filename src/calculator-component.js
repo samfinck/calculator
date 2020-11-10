@@ -1,18 +1,28 @@
-import React from 'react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
-export default function CalculatorComponent(){
-    
+export default function CalculatorComponent({ entryDivInitial }){
+
+    const [calculationEntry, setCalculationEntry] = useState(entryDivInitial);
+
+    const [lastButtonClick, setLastButtonClick] = useState('0')
+
+    const [additionCapture, setAdditionCapture] = useState(0);
+
+    const [subtractionCapture, setSubtractionCapture] = useState(0);
+
+    const [multiplicationCapture, setMultiplicationCapture] = useState(0);
+
+    const [divisionCapture, setDivisionCapture] = useState(0);
 
     const entryDiv = useRef(null);
 
     const clearButton = useRef(null);
 
-    const clearLastButton = useRef(null);
+    const allClearButton = useRef(null);
 
     const equalsButton = useRef(null);
 
-    const addButton = useRef(null);
+    const additionButton = useRef(null);
 
     const subtractButton = useRef(null);
 
@@ -42,36 +52,134 @@ export default function CalculatorComponent(){
 
     const nineButton = useRef(null);
 
+    const onClearButton = () => {
+        setCalculationEntry(prev=> prev - lastButtonClick)
+    }
 
-    //const onAddNumber = () => {
-    //    console.log(numberButton.current.innerHTML);
-    //}
+    const onAllClearButton = () => {
+        setCalculationEntry(prev => '')
+    }
 
-    const onAddNumber = () => {
-        document.getElementById('entry-div').innerHTML = document.getElementById('entry-div').innerHTML + document.getElementById('point-div').innerHTML;
+    const onAdditionButton = () => {
+        setAdditionCapture(prev => entryDiv.current.innerHTML);
+        setCalculationEntry(prev => '');
+    }
+
+    const onSubtractionButton = () => {
+        setSubtractionCapture(prev => entryDiv.current.innerHTML);
+        setCalculationEntry(prev => '');
+    }
+
+    const onMultiplicationButton = () => {
+        setMultiplicationCapture(prev => entryDiv.current.innerHTML);
+        setCalculationEntry(prev => '');
+    }
+
+    const onDivisionButton = () => {
+        setDivisionCapture(prev => entryDiv.current.innerHTML);
+        setCalculationEntry(prev => '');
+    }
+
+    const onEqualsButton = () => {
+        if (additionCapture !== 0){
+            setCalculationEntry(+additionCapture + +entryDiv.current.innerHTML);
+            setAdditionCapture(prev => 0)
+        }
+        if (subtractionCapture !== 0){
+            setCalculationEntry(+subtractionCapture - +entryDiv.current.innerHTML);
+            setSubtractionCapture(prev => 0)
+        }
+        if (multiplicationCapture !== 0){
+            setCalculationEntry(+multiplicationCapture * +entryDiv.current.innerHTML);
+            setMultiplicationCapture(prev => 0)
+        }
+        if (divisionCapture !== 0){
+            setCalculationEntry(+divisionCapture / +entryDiv.current.innerHTML);
+            setDivisionCapture(prev => 0)
+        }
+    }
+
+
+    const onAddPoint = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + pointButton.current.innerHTML)
+        setLastButtonClick('.')
+    }
+
+    const onAddZero = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + zeroButton.current.innerHTML);
+        setLastButtonClick("0");
+    }
+
+    const onAddOne = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + oneButton.current.innerHTML)
+        setLastButtonClick(oneButton.current.innerHTML)
+    }
+
+    const onAddTwo = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + twoButton.current.innerHTML)
+        setLastButtonClick('2')
+    }
+
+    const onAddThree = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + threeButton.current.innerHTML)
+        setLastButtonClick('3')
+    }
+    const onAddFour = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + fourButton.current.innerHTML)
+        setLastButtonClick('4')
+    }
+
+    const onAddFive = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + fiveButton.current.innerHTML)
+        setLastButtonClick('5')
+    }
+
+    const onAddSix = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + sixButton.current.innerHTML)
+        setLastButtonClick('6')
+    }
+
+    const onAddSeven = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + sevenButton.current.innerHTML)
+        setLastButtonClick('7')
+    }
+
+    const onAddEight = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + eightButton.current.innerHTML)
+        setLastButtonClick('8')
+    }
+
+    const onAddNine = () => {
+        setCalculationEntry(prev => entryDiv.current.innerHTML + nineButton.current.innerHTML)
+        setLastButtonClick('9')
     }
 
     return(
-        <div className="calculator-container">
+        <div 
+            className="calculator-container"
+        >
             <div 
                 className="entry-div"
                 id='entry-div'
                 ref={entryDiv}
                 contentEditable={true} 
-                data-text="0"
+                data-text='0'
             >
+                {calculationEntry}
             </div>
             
             <div 
                 className="clear-div"
                 ref={clearButton}
+                onClick={onClearButton}
             >
                 Clear Entry
             </div>
             
             <div 
                 className="last-value-clear-div"
-                ref={clearLastButton}
+                ref={allClearButton}
+                onClick={onAllClearButton}
             >
                 AC
             </div>
@@ -79,13 +187,15 @@ export default function CalculatorComponent(){
             <div 
                 className="equals-div"
                 ref={equalsButton}
+                onClick={onEqualsButton}
             >
                 =
             </div>
             
             <div 
                 className="add-div"
-                ref={addButton}
+                ref={additionButton}
+                onClick={onAdditionButton}
             >
                 +
             </div>
@@ -93,6 +203,7 @@ export default function CalculatorComponent(){
             <div 
                 className="subtract-div"
                 ref={subtractButton}
+                onClick={onSubtractionButton}
             >
                 -
             </div>
@@ -100,6 +211,7 @@ export default function CalculatorComponent(){
             <div 
                 className="multiply-div"
                 ref={multiplyButton}
+                onClick={onMultiplicationButton}
             >
                 ×
             </div>
@@ -107,6 +219,7 @@ export default function CalculatorComponent(){
             <div 
                 className="divide-div"
                 ref={divideButton}
+                onClick={onDivisionButton}
             >
                 ÷
             </div>
@@ -114,7 +227,7 @@ export default function CalculatorComponent(){
             <div 
                 className="point-div"
                 ref={pointButton}
-                onClick={onAddNumber}
+                onClick={onAddPoint}
                 id="point-div"
                 
             >
@@ -124,7 +237,7 @@ export default function CalculatorComponent(){
             <div 
                 className="zero-div"
                 ref={zeroButton}
-                onClick={onAddNumber}
+                onClick={onAddZero}
             >
                 0
             </div>
@@ -132,7 +245,7 @@ export default function CalculatorComponent(){
             <div 
                 className="one-div"
                 ref={oneButton}
-                onClick={onAddNumber}
+                onClick={onAddOne}
             >
                 1
             </div>
@@ -140,7 +253,7 @@ export default function CalculatorComponent(){
             <div 
                 className="two-div"
                 ref={twoButton}
-                onClick={onAddNumber}
+                onClick={onAddTwo}
             >   
                 2
             </div>
@@ -148,7 +261,7 @@ export default function CalculatorComponent(){
             <div 
                 className="three-div"
                 ref={threeButton}
-                onClick={onAddNumber}
+                onClick={onAddThree}
             >
                 3
             </div>
@@ -156,7 +269,7 @@ export default function CalculatorComponent(){
             <div 
                 className="four-div"
                 ref={fourButton}
-                onClick={onAddNumber}
+                onClick={onAddFour}
             >   
                 4
             </div>
@@ -164,7 +277,7 @@ export default function CalculatorComponent(){
             <div 
                 className="five-div"
                 ref={fiveButton}
-                onClick={onAddNumber}
+                onClick={onAddFive}
             >
                 5
             </div>
@@ -172,7 +285,7 @@ export default function CalculatorComponent(){
             <div 
                 className="six-div"
                 ref={sixButton}
-                onClick={onAddNumber}
+                onClick={onAddSix}
             >   
                 6
             </div>
@@ -180,7 +293,7 @@ export default function CalculatorComponent(){
             <div 
                 className="seven-div"
                 ref={sevenButton}
-                onClick={onAddNumber}
+                onClick={onAddSeven}
             >
                 7
             </div>
@@ -188,7 +301,7 @@ export default function CalculatorComponent(){
             <div 
                 className="eight-div"
                 ref={eightButton}
-                onClick={onAddNumber}
+                onClick={onAddEight}
             >
                 8
             </div>
@@ -196,7 +309,7 @@ export default function CalculatorComponent(){
             <div 
                 className="nine-div"
                 ref={nineButton}
-                onClick={onAddNumber}
+                onClick={onAddNine}
             >
                 9
             </div>
