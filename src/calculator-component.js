@@ -1,318 +1,463 @@
-import { useRef, useState } from 'react';
+import { useState } from "react";
 
-export default function CalculatorComponent({ entryDivInitial }){
+export default function CalculatorComponent() {
+  const [calculationEntry, setCalculationEntry] = useState(0);
 
-    const [calculationEntry, setCalculationEntry] = useState(entryDivInitial);
+  const [functionPressed, setFunctionPressed] = useState(false);
 
-    const [lastButtonClick, setLastButtonClick] = useState('0')
+  const [equalsPressed, setEqualsPressed] = useState(false);
 
-    const [additionCapture, setAdditionCapture] = useState(0);
+  const [largeNumber, setLargeNumber] = useState(false);
 
-    const [subtractionCapture, setSubtractionCapture] = useState(0);
+  const [additionCapture, setAdditionCapture] = useState(null);
 
-    const [multiplicationCapture, setMultiplicationCapture] = useState(0);
+  const [subtractionCapture, setSubtractionCapture] = useState(null);
 
-    const [divisionCapture, setDivisionCapture] = useState(0);
+  const [multiplicationCapture, setMultiplicationCapture] = useState(null);
 
-    const entryDiv = useRef(null);
+  const [divisionCapture, setDivisionCapture] = useState(null);
 
-    const clearButton = useRef(null);
+  const [pointPressed, setPointPressed] = useState(false);
 
-    const allClearButton = useRef(null);
-
-    const equalsButton = useRef(null);
-
-    const additionButton = useRef(null);
-
-    const subtractButton = useRef(null);
-
-    const multiplyButton = useRef(null);
-
-    const divideButton = useRef(null);
-
-    const pointButton = useRef(null);
-
-    const zeroButton = useRef(null);
-
-    const oneButton = useRef(null);
-
-    const twoButton = useRef(null);
-
-    const threeButton = useRef(null);
-
-    const fourButton = useRef(null);
-
-    const fiveButton = useRef(null);
-
-    const sixButton = useRef(null);
-
-    const sevenButton = useRef(null);
-
-    const eightButton = useRef(null);
-
-    const nineButton = useRef(null);
-
-    const onClearButton = () => {
-        setCalculationEntry(prev=> prev - lastButtonClick)
+  const onClearLastButton = () => {
+    if (calculationEntry === 0) {
+      console.log("zero minus zero");
     }
-
-    const onAllClearButton = () => {
-        setCalculationEntry(prev => '')
+    if (calculationEntry < 10 && calculationEntry > 0) {
+      setCalculationEntry(0);
     }
-
-    const onAdditionButton = () => {
-        setAdditionCapture(prev => entryDiv.current.innerHTML);
-        setCalculationEntry(prev => '');
+    if (calculationEntry > 9) {
+      let str = calculationEntry.toString();
+      str = str.slice(0, -1);
+      setCalculationEntry(str);
     }
-
-    const onSubtractionButton = () => {
-        setSubtractionCapture(prev => entryDiv.current.innerHTML);
-        setCalculationEntry(prev => '');
+    if (equalsPressed) {
+      setCalculationEntry(0);
+      setEqualsPressed(false);
     }
+  };
 
-    const onMultiplicationButton = () => {
-        setMultiplicationCapture(prev => entryDiv.current.innerHTML);
-        setCalculationEntry(prev => '');
+  const onAllClearButton = () => {
+    setCalculationEntry(0);
+    setFunctionPressed(false);
+    setAdditionCapture(null);
+    setSubtractionCapture(null);
+    setMultiplicationCapture(null);
+    setDivisionCapture(null);
+    setEqualsPressed(false);
+  };
+
+  const onEqualsButton = () => {
+    if (additionCapture !== null) {
+      let a = (+additionCapture + +calculationEntry).toString();
+      if (`${a.length}` > 8) {
+        setLargeNumber(true);
+      }
+      setCalculationEntry((prev) => +prev + +additionCapture);
+      setAdditionCapture(null);
+      setFunctionPressed(true);
+      setPointPressed(false);
+      setEqualsPressed(true);
     }
-
-    const onDivisionButton = () => {
-        setDivisionCapture(prev => entryDiv.current.innerHTML);
-        setCalculationEntry(prev => '');
+    if (subtractionCapture !== null) {
+      let a = (+subtractionCapture - +calculationEntry).toString();
+      if (`${a.length}` > 8) {
+        setLargeNumber(true);
+      }
+      setCalculationEntry((prev) => +subtractionCapture - +prev);
+      setSubtractionCapture(null);
+      setFunctionPressed(true);
+      setPointPressed(false);
+      setEqualsPressed(true);
     }
-
-    const onEqualsButton = () => {
-        if (additionCapture !== 0){
-            setCalculationEntry(+additionCapture + +entryDiv.current.innerHTML);
-            setAdditionCapture(prev => 0)
-        }
-        if (subtractionCapture !== 0){
-            setCalculationEntry(+subtractionCapture - +entryDiv.current.innerHTML);
-            setSubtractionCapture(prev => 0)
-        }
-        if (multiplicationCapture !== 0){
-            setCalculationEntry(+multiplicationCapture * +entryDiv.current.innerHTML);
-            setMultiplicationCapture(prev => 0)
-        }
-        if (divisionCapture !== 0){
-            setCalculationEntry(+divisionCapture / +entryDiv.current.innerHTML);
-            setDivisionCapture(prev => 0)
-        }
+    if (multiplicationCapture !== null) {
+      let a = (+multiplicationCapture * +calculationEntry).toString();
+      if (`${a.length}` > 8) {
+        setLargeNumber(true);
+      }
+      setCalculationEntry((prev) => +prev * +multiplicationCapture);
+      setMultiplicationCapture(null);
+      setFunctionPressed(true);
+      setPointPressed(false);
+      setEqualsPressed(true);
     }
-
-
-    const onAddPoint = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + pointButton.current.innerHTML)
-        setLastButtonClick('.')
+    if (divisionCapture !== null) {
+      let a = (+divisionCapture / +calculationEntry).toString();
+      if (`${a.length}` > 8) {
+        console.log(`${a} ${a.length}`);
+        let b = a.substring(0, 8);
+        setCalculationEntry(b);
+        setDivisionCapture(null);
+        setFunctionPressed(true);
+        setPointPressed(false);
+        setEqualsPressed(true);
+      } else {
+        setCalculationEntry((prev) => +divisionCapture / +prev);
+        setDivisionCapture(null);
+        setFunctionPressed(true);
+        setPointPressed(false);
+        setEqualsPressed(true);
+      }
     }
+  };
 
-    const onAddZero = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + zeroButton.current.innerHTML);
-        setLastButtonClick("0");
+  const onAdditionButton = () => {
+    var a = +subtractionCapture + +multiplicationCapture + +divisionCapture;
+    if (a === 0) {
+      setAdditionCapture(calculationEntry);
+      setFunctionPressed(true);
+      setPointPressed(false);
+      setEqualsPressed(false);
+      setSubtractionCapture(null);
+      setMultiplicationCapture(null);
+      setDivisionCapture(null);
+    } else if (a !== 0) {
+      setAdditionCapture(a);
+      setSubtractionCapture(null);
+      setMultiplicationCapture(null);
+      setDivisionCapture(null);
     }
+  };
 
-    const onAddOne = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + oneButton.current.innerHTML)
-        setLastButtonClick(oneButton.current.innerHTML)
+  const onSubtractionButton = () => {
+    var a = +additionCapture + +multiplicationCapture + +divisionCapture;
+    if (a === 0) {
+      setSubtractionCapture(calculationEntry);
+      setFunctionPressed(true);
+      setPointPressed(false);
+      setEqualsPressed(false);
+      setAdditionCapture(null);
+      setMultiplicationCapture(null);
+      setDivisionCapture(null);
+    } else if (
+      +additionCapture + +multiplicationCapture + +divisionCapture !==
+      0
+    ) {
+      setSubtractionCapture(a);
+      setAdditionCapture(null);
+      setMultiplicationCapture(null);
+      setDivisionCapture(null);
     }
+  };
 
-    const onAddTwo = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + twoButton.current.innerHTML)
-        setLastButtonClick('2')
+  const onMultiplicationButton = () => {
+    var a = +additionCapture + +subtractionCapture + +divisionCapture;
+    if (a === 0) {
+      setMultiplicationCapture(calculationEntry);
+      setFunctionPressed(true);
+      setPointPressed(false);
+      setEqualsPressed(false);
+      setAdditionCapture(null);
+      setSubtractionCapture(null);
+      setDivisionCapture(null);
+    } else if (
+      +additionCapture + +subtractionCapture + +divisionCapture !==
+      0
+    ) {
+      setMultiplicationCapture(a);
+      setAdditionCapture(null);
+      setSubtractionCapture(null);
+      setDivisionCapture(null);
     }
+  };
+  const onDivisionButton = () => {
+    var a = +additionCapture + subtractionCapture + +multiplicationCapture;
+    if (a === 0 && calculationEntry !== 0) {
+      setDivisionCapture(calculationEntry);
+      setFunctionPressed(true);
+      setPointPressed(false);
+      setEqualsPressed(false);
+      setAdditionCapture(null);
+      setSubtractionCapture(null);
+      setMultiplicationCapture(null);
+    } else if (
+      +additionCapture + +subtractionCapture + +multiplicationCapture !==
+      0
+    ) {
+      setDivisionCapture(a);
+      setAdditionCapture(null);
+      setSubtractionCapture(null);
+      setMultiplicationCapture(null);
+    }
+  };
 
-    const onAddThree = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + threeButton.current.innerHTML)
-        setLastButtonClick('3')
+  const onPointPress = () => {
+    if (pointPressed) {
+      console.log("point pressed already");
     }
-    const onAddFour = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + fourButton.current.innerHTML)
-        setLastButtonClick('4')
+    if (equalsPressed || functionPressed || calculationEntry === 0) {
+      setCalculationEntry("0.");
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setPointPressed(true);
+      setLargeNumber(false);
     }
+    if (
+      calculationEntry !== 0 &&
+      !pointPressed &&
+      !equalsPressed &&
+      !functionPressed
+    ) {
+      setCalculationEntry((prev) => prev + ".");
+      setPointPressed(true);
+    }
+  };
 
-    const onAddFive = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + fiveButton.current.innerHTML)
-        setLastButtonClick('5')
+  const onZeroPress = () => {
+    if (calculationEntry === "0" || calculationEntry === 0) {
+      console.log("zero on zero");
     }
-
-    const onAddSix = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + sixButton.current.innerHTML)
-        setLastButtonClick('6')
+    if (calculationEntry !== 0) {
+      setCalculationEntry((prev) => prev + "0");
     }
-
-    const onAddSeven = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + sevenButton.current.innerHTML)
-        setLastButtonClick('7')
+    if (functionPressed || equalsPressed) {
+      setCalculationEntry(0);
+      setFunctionPressed(false);
+      setLargeNumber(false);
     }
+  };
 
-    const onAddEight = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + eightButton.current.innerHTML)
-        setLastButtonClick('8')
+  const onOnePress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(1);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+    } else {
+      setCalculationEntry((prev) => prev + "1");
     }
+  };
 
-    const onAddNine = () => {
-        setCalculationEntry(prev => entryDiv.current.innerHTML + nineButton.current.innerHTML)
-        setLastButtonClick('9')
+  const onTwoPress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(2);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setLargeNumber(false);
+    } else {
+      setCalculationEntry((prev) => prev + "2");
     }
+  };
 
-    return(
-        <div 
-            className="calculator-container"
-        >
-            <div 
-                className="entry-div"
-                id='entry-div'
-                ref={entryDiv}
-                contentEditable={true} 
-                data-text='0'
-            >
-                {calculationEntry}
-            </div>
-            
-            <div 
-                className="clear-div"
-                ref={clearButton}
-                onClick={onClearButton}
-            >
-                Clear Entry
-            </div>
-            
-            <div 
-                className="last-value-clear-div"
-                ref={allClearButton}
-                onClick={onAllClearButton}
-            >
-                AC
-            </div>
-            
-            <div 
-                className="equals-div"
-                ref={equalsButton}
-                onClick={onEqualsButton}
-            >
-                =
-            </div>
-            
-            <div 
-                className="add-div"
-                ref={additionButton}
-                onClick={onAdditionButton}
-            >
-                +
-            </div>
-            
-            <div 
-                className="subtract-div"
-                ref={subtractButton}
-                onClick={onSubtractionButton}
-            >
-                -
-            </div>
-            
-            <div 
-                className="multiply-div"
-                ref={multiplyButton}
-                onClick={onMultiplicationButton}
-            >
-                ×
-            </div>
-            
-            <div 
-                className="divide-div"
-                ref={divideButton}
-                onClick={onDivisionButton}
-            >
-                ÷
-            </div>
-            
-            <div 
-                className="point-div"
-                ref={pointButton}
-                onClick={onAddPoint}
-                id="point-div"
-                
-            >
-                .
-            </div>
-            
-            <div 
-                className="zero-div"
-                ref={zeroButton}
-                onClick={onAddZero}
-            >
-                0
-            </div>
-            
-            <div 
-                className="one-div"
-                ref={oneButton}
-                onClick={onAddOne}
-            >
-                1
-            </div>
-            
-            <div 
-                className="two-div"
-                ref={twoButton}
-                onClick={onAddTwo}
-            >   
-                2
-            </div>
-            
-            <div 
-                className="three-div"
-                ref={threeButton}
-                onClick={onAddThree}
-            >
-                3
-            </div>
-            
-            <div 
-                className="four-div"
-                ref={fourButton}
-                onClick={onAddFour}
-            >   
-                4
-            </div>
-            
-            <div 
-                className="five-div"
-                ref={fiveButton}
-                onClick={onAddFive}
-            >
-                5
-            </div>
-            
-            <div 
-                className="six-div"
-                ref={sixButton}
-                onClick={onAddSix}
-            >   
-                6
-            </div>
-            
-            <div 
-                className="seven-div"
-                ref={sevenButton}
-                onClick={onAddSeven}
-            >
-                7
-            </div>
-            
-            <div 
-                className="eight-div"
-                ref={eightButton}
-                onClick={onAddEight}
-            >
-                8
-            </div>
-            
-            <div 
-                className="nine-div"
-                ref={nineButton}
-                onClick={onAddNine}
-            >
-                9
-            </div>
-        </div>
-    )
+  const onThreePress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(3);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setLargeNumber(false);
+    } else {
+      setCalculationEntry((prev) => prev + "3");
+    }
+  };
+
+  const onFourPress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(4);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setLargeNumber(false);
+    } else {
+      setCalculationEntry((prev) => prev + "4");
+    }
+  };
+  const onFivePress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(5);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setLargeNumber(false);
+    } else {
+      setCalculationEntry((prev) => prev + "5");
+    }
+  };
+
+  const onSixPress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(6);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setLargeNumber(false);
+    } else {
+      setCalculationEntry((prev) => prev + "6");
+    }
+  };
+
+  const onSevenPress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(7);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setLargeNumber(false);
+    } else {
+      setCalculationEntry((prev) => prev + "7");
+    }
+  };
+  const onEightPress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(8);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setLargeNumber(false);
+    } else {
+      setCalculationEntry((prev) => prev + "8");
+    }
+  };
+  const onNinePress = () => {
+    if (
+      functionPressed ||
+      calculationEntry === "0" ||
+      calculationEntry === 0 ||
+      equalsPressed
+    ) {
+      setCalculationEntry(9);
+      setFunctionPressed(false);
+      setEqualsPressed(false);
+      setLargeNumber(false);
+    } else {
+      setCalculationEntry((prev) => prev + "9");
+    }
+  };
+
+  return (
+    <div className="calculator-container">
+      <div
+        className={`entry-div ${equalsPressed ? "entry-div-equals" : ""} ${
+          largeNumber ? "entry-div-large" : ""
+        }`}
+      >
+        {calculationEntry}
+      </div>
+
+      <button className="clear-div" onClick={onClearLastButton}>
+        Clear Last
+      </button>
+
+      <button className="last-value-clear-div" onClick={onAllClearButton}>
+        AC
+      </button>
+
+      <button className="equals-div" onClick={onEqualsButton}>
+        =
+      </button>
+
+      <button
+        className={`addition-div ${
+          additionCapture !== null ? "addition-div-highlight" : ""
+        }`}
+        onClick={onAdditionButton}
+      >
+        +
+      </button>
+
+      <button
+        className={`subtraction-div ${
+          subtractionCapture !== null ? "subtraction-div-highlight" : ""
+        }`}
+        onClick={onSubtractionButton}
+      >
+        −
+      </button>
+
+      <button
+        className={`multiplication-div ${
+          multiplicationCapture !== null ? "multiplication-div-highlight" : ""
+        }`}
+        onClick={onMultiplicationButton}
+      >
+        ×
+      </button>
+
+      <button
+        className={`division-div ${
+          divisionCapture !== null ? "division-div-highlight" : ""
+        }`}
+        onClick={onDivisionButton}
+      >
+        ÷
+      </button>
+
+      <button className="point-div" onClick={onPointPress} id="point-div">
+        .
+      </button>
+
+      <button className="zero-div" onClick={onZeroPress}>
+        0
+      </button>
+
+      <button className="one-div" onClick={onOnePress}>
+        1
+      </button>
+
+      <button className="two-div" onClick={onTwoPress}>
+        2
+      </button>
+
+      <button className="three-div" onClick={onThreePress}>
+        3
+      </button>
+
+      <button className="four-div" onClick={onFourPress}>
+        4
+      </button>
+
+      <button className="five-div" onClick={onFivePress}>
+        5
+      </button>
+
+      <button className="six-div" onClick={onSixPress}>
+        6
+      </button>
+
+      <button className="seven-div" onClick={onSevenPress}>
+        7
+      </button>
+
+      <button className="eight-div" onClick={onEightPress}>
+        8
+      </button>
+
+      <button className="nine-div" onClick={onNinePress}>
+        9
+      </button>
+    </div>
+  );
 }
